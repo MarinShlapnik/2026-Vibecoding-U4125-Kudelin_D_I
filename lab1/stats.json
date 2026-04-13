@@ -1,0 +1,14 @@
+{
+  "total_sold": 1,
+  "total_earned": 700,
+  "total_bought": 0,
+  "total_spent": 0,
+  "sales": [
+    {
+      "name": "Minnesota Slick",
+      "price": 700,
+      "date": "13.04.2026 16:41"
+    }
+  ],
+  "purchases": []
+}
