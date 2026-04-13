@@ -1,62 +1,70 @@
-🤖 TF2 Trading Bot (v2 — с SQLite)
-Telegram-бот для автоматизации торговли предметами Team Fortress 2 на площадке steam-trader.net.
+# 🤖 TF2 Trading Bot
 
-Источники данных
-Источник	Тип	Описание
-steam-trader.net API	REST API	Инвентарь, цены, покупка/продажа
-SQLite (trading_bot.db)	База данных	Статистика продаж, покупок, логи
-Структура базы данных
--- Таблица продаж
-CREATE TABLE sales (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    item_name TEXT NOT NULL,
-    price INTEGER NOT NULL,          -- цена в копейках
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+Telegram-бот для автоматизации торговли косметическими предметами Team Fortress 2 на маркетплейсе [steam-trader.net](https://steam-trader.net).
 
--- Таблица покупок
-CREATE TABLE purchases (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    item_name TEXT NOT NULL,
-    price INTEGER NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+Бот самостоятельно выставляет предметы на продажу, поддерживает минимальную цену на рынке (андерпрайсинг −1 копейка), покупает выгодные лоты по заданному списку и ведёт полную статистику операций в SQLite.
 
--- Лог действий бота
-CREATE TABLE bot_log (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    action TEXT NOT NULL,             -- start/stop/sale/buy/error/reprice
-    details TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-Команды бота
-Команда	Описание	Источник данных
-/start	Приветствие	—
-/stats	Общая статистика	SQLite
-/selling	Предметы на продаже	API
-/sold	Последние продажи	SQLite
-/bought	Последние покупки	SQLite
-/history N	История за N дней	SQLite
-/profit N	Прибыль по дням за N дней	SQLite
-/top	Топ предметов по выручке	SQLite
-/status	Статус торгового цикла	—
-/run	Запустить торговлю	API
-/stop	Остановить торговлю	—
-Установка и запуск
+---
+
+## Что умеет
+
+- **Автопродажа** — забирает новые предметы из инвентаря и выставляет на маркет
+- **Андерпрайсинг** — каждую минуту проверяет конкурентов и снижает цену на 1 коп.
+- **Автопокупка** — сканирует рынок и покупает предметы дешевле заданного порога
+- **Уведомления** — мгновенные Telegram-алерты при каждой продаже и покупке
+- **Статистика** — продажи, покупки, прибыль, топ предметов, история по дням
+- **Управление** — запуск/остановка торговли прямо из Telegram
+
+## Команды
+
+| Команда | Описание |
+|---|---|
+| `/start` | Приветствие и список команд |
+| `/stats` | Общая статистика: продажи, покупки, прибыль |
+| `/inventory` | Обзор инвентаря |
+| `/selling` | Предметы на продаже с ценами |
+| `/sold` | Последние продажи |
+| `/bought` | Последние покупки |
+| `/history N` | История операций за N дней |
+| `/profit N` | Прибыль по дням |
+| `/top` | Топ предметов по выручке |
+| `/run` | Запустить торговлю |
+| `/stop` | Остановить торговлю |
+
+## Стек
+
+- **Python 3.11**
+- **python-telegram-bot** — Telegram Bot API
+- **requests** — HTTP-запросы к steam-trader.net API
+- **SQLite** — хранение статистики и логов
+- **Railway** — деплой и хостинг 24/7
+
+## Структура репозитория
+
+```
+├── lab1/          # Лаб. 1 — создание бота
+├── lab2/          # Лаб. 2 — подключение к данным (SQLite + API)
+├── lab3/          # Лаб. 3 — деплой на Railway + фидбек
+│   ├── bot.py
+│   ├── requirements.txt
+│   ├── Procfile
+│   ├── runtime.txt
+│   ├── .env.example
+│   └── README.md
+└── README.md      # ← вы здесь
+```
+
+## Быстрый старт
+
+```bash
+cd lab3
 pip install -r requirements.txt
-cp .env.example .env
-# заполнить .env
+cp .env.example .env   # заполнить токены
 python bot.py
-Стек технологий
-Python 3.10+
-python-telegram-bot — Telegram Bot API
-requests — HTTP-запросы к steam-trader.net API
-sqlite3 — встроенная БД Python (хранение статистики)
-python-dotenv — конфигурация через .env
-Структура проекта
-├── bot.py              # Основной код бота
-├── trading_bot.db      # SQLite база данных (создаётся автоматически)
-├── requirements.txt    # Зависимости
-├── .env.example        # Пример конфигурации
-├── .env                # Конфигурация (не в git)
-└── README.md           # Документация
+```
+
+## Автор
+
+**Куделин Д.И.** — ИТМО, группа U4125, курс «Управление высокотехнологичным бизнесом»
+
+Проект выполнен в рамках дисциплины Vibecoding (2026).
